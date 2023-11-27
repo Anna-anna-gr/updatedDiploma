@@ -1,17 +1,17 @@
 import registrationPage from '../support/pages/registrationPage'
 import loginPage from '../support/pages/loginPage'
-import newAddressPage from '../support/pages/newAddressPage'
+import purchase from '../support/pages/purchase'
 
 describe('test5', () => {
     const registrationPageInstance = new registrationPage();
     const loginPageInstance = new loginPage();
-    const newAddressPageInstance = new newAddressPage();
+    const newPurchaseInstance = new purchase();
     let user;
     
       it('successfully registration', () => {
         cy.log('successfully purchase');
         cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/register')
-        cy.get('[aria-label="Close Welcome Banner"]').click();
+        registrationPageInstance.getCloseWelcomeBanner().click();
     
          user = {
           email : `testuser${Math.floor(Math.random() * 100000)}@example.com`,
@@ -22,17 +22,16 @@ describe('test5', () => {
          registrationPageInstance.fillRegistrationFileds(user)
     
         const randomSecurityQuestionIndex = Math.floor(Math.random() * 3); 
-        cy.get('#mat-select-0').click();
-        cy.get('.mat-option').eq(randomSecurityQuestionIndex).click();
+        registrationPageInstance.getSecurityQuestion().click();
+        registrationPageInstance.getSelectSecurityQuestion().eq(randomSecurityQuestionIndex).click();
     
-        cy.get('#securityAnswerControl').type(user.securityAnswer);
-    
-    
-        cy.get('#registerButton').click();
+        registrationPageInstance.getSecurityAnswer().type(user.securityAnswer);
+  
+       registrationPageInstance.getRegisterButton().click();
     
     
         cy.url().should('include', '/login'); 
-        cy.get('.ng-tns-c70-15 .mat-simple-snack-bar-content ').should('be.visible').should('have.text', 'Registration completed successfully. You can now log in.'); 
+        registrationPageInstance.getSuccessfullMessage().should('be.visible').should('have.text', 'Registration completed successfully. You can now log in.'); // Replace with the actual success message or element
     
     
         Cypress.env('email', user.email);
@@ -42,7 +41,7 @@ describe('test5', () => {
     
       it('successfull purchase', () => {
         cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/login');
-        cy.get('[aria-label="Close Welcome Banner"]').click();
+        registrationPageInstance.getCloseWelcomeBanner().click();
     
     
         const email = Cypress.env('email');
@@ -53,13 +52,13 @@ describe('test5', () => {
         loginPageInstance.getPasswordField().type(password);
     
        
-        cy.get('#loginButton').click();
+        loginPageInstance.getLoginButton().click();
     
         cy.url().should('include', '/search');
     
-        cy.get('.heading.mat-elevation-z6 ').should('be.visible').should('have.text','All Products');
+        loginPageInstance.getMainPage().should('be.visible').should('have.text','All Products');
     
-        cy.get('.btn-basket').first().click();
+        newPurchaseInstance.getAddToButton().first().click();
             
         const newAddress = {
               country : `country${Math.floor(Math.random() * 100000)}`,
@@ -71,50 +70,51 @@ describe('test5', () => {
               state : `state${Math.floor(Math.random() * 100000)}`
         }
     
-            cy.get('.mat-snack-bar-container',{ timeout: 100000 }).should('be.visible')
-            cy.get('.mat-simple-snackbar.ng-star-inserted',{ timeout: 100000 }).should('be.visible').should('contain','Placed Apple Juice (1000ml) into basket.'); 
+            newPurchaseInstance.getNotification().should('be.visible')
+            newPurchaseInstance.getNotificationText().should('be.visible').should('contain','Placed Apple Juice (1000ml) into basket.'); 
     
            
-            cy.get('[routerlink="/basket"]').click();
+            newPurchaseInstance.getSelectBasket().click();
         
-            cy.get('[data-icon="cart-arrow-down"]').click();
+            newPurchaseInstance.getOpenBasket().click();
     
-            cy.get('.mat-button-wrapper').should('contain','Add New Address')
-            cy.get('[routerlink="/address/create"]').click();
+            newPurchaseInstance.getSelectAddNewAddress().should('contain','Add New Address')
+            newPurchaseInstance.getCreateNewAddress().click();
         
     
-            newAddressPageInstance.fillNewAddressFileds(newAddress)
+            newPurchaseInstance.fillNewAddressFileds(newAddress)
         
-            cy.contains('Submit').click();
+            newPurchaseInstance.getSubmitButton().click();
+
         
-            cy.get('.mat-radio-inner-circle').first().click();
-            cy.contains('Continue').click();
+            newPurchaseInstance.getSelectAnOption().first().click();
+            newPurchaseInstance.getContinueButton().click();
         
-            cy.get('.mat-radio-inner-circle').first().click();
-            cy.contains('Continue').click({force:true});
+            newPurchaseInstance.getSelectAnOption().first().click();
+            newPurchaseInstance.getContinueButton().click({force:true});
     
     
-            cy.contains('Add a credit or debit card').click();
+            newPurchaseInstance.getAddCreditCard().click();
     
     
             const Name = 'John Doe';
-            cy.contains('Name').parents('span').siblings('input').type(Name);
+            newPurchaseInstance.getName2().parents('span').siblings('input').type(Name);
     
-            cy.contains('Card Number').parents('span').siblings('input').type('4242424242424242');;
+            newPurchaseInstance.getYourCardNumber().parents('span').siblings('input').type('4242424242424242');;
     
             const randomMonth = Cypress._.random(1, 12);
-            cy.contains('Expiry Month').parents('span').siblings('select').select(randomMonth.toString());
+            newPurchaseInstance.getExpiryMonth().parents('span').siblings('select').select(randomMonth.toString());
     
-            cy.contains('Expiry Year').parents('span').siblings('select').select('2080');
+            newPurchaseInstance.getExpiryYear().parents('span').siblings('select').select('2080');
     
-            cy.get('#submitButton').click();
+            newPurchaseInstance.getSubmitButton().click();
     
-            cy.get('.mat-radio-inner-circle').first().click({force:true});
-            cy.contains('Continue').click({force:true});
+            newPurchaseInstance.getSelectAnOption().first().click({force:true});
+            newPurchaseInstance.getContinueButton().click({force:true});
     
-            cy.get('#checkoutButton').click();
+            newPurchaseInstance.getCheckoutButton().click();
     
-            cy.contains('Thank you for your purchase!').should('be.visible');
+            newPurchaseInstance.getSuccessPurchase().should('be.visible');
     })
     })
     

@@ -7,7 +7,7 @@ describe('test1', () => {
     it('successfully registration', () => {
       cy.log('successfully registration');
       cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/register')
-      cy.get('[aria-label="Close Welcome Banner"]').click();
+      registrationPageInstance.getCloseWelcomeBanner().click();
   
       const user = {
        email : `testuser${Math.floor(Math.random() * 100000)}@example.com`,
@@ -18,15 +18,15 @@ describe('test1', () => {
       registrationPageInstance.fillRegistrationFileds(user)
   
       const randomSecurityQuestionIndex = Math.floor(Math.random() * 3); 
-      cy.get('#mat-select-0').click();
-      cy.get('.mat-option').eq(randomSecurityQuestionIndex).click();
+      registrationPageInstance.getSecurityQuestion().click();
+      registrationPageInstance.getSelectSecurityQuestion().eq(randomSecurityQuestionIndex).click();
   
-      cy.get('#securityAnswerControl').type(user.securityAnswer);
+      registrationPageInstance.getSecurityAnswer().type(user.securityAnswer);
   
-      cy.get('#registerButton').click();
+      registrationPageInstance.getRegisterButton().click();
   
       cy.url().should('include', '/login'); 
-      cy.get('.ng-tns-c70-15 .mat-simple-snack-bar-content ').should('be.visible').should('have.text', 'Registration completed successfully. You can now log in.'); // Replace with the actual success message or element
+      registrationPageInstance.getSuccessfullMessage().should('be.visible').should('have.text', 'Registration completed successfully. You can now log in.'); // Replace with the actual success message or element
     
   
     })

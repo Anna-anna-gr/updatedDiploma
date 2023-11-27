@@ -1,17 +1,22 @@
+import captcha from '../support/pages/captchaPage.js'
+import registrationPage from '../support/pages/registrationPage'
+
 describe('test6', () => {
+  const newCaptchaInstance = new captcha();
+  const registrationPageInstance = new registrationPage();
     
     it('Solves the captcha and enters the result', () => {
       cy.log('Captcha');
-      cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/contact'); // Замените 'your_website_url' на фактический URL вашего сайта
-      cy.get('[aria-label="Close Welcome Banner"]').click();
+      cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/contact'); 
+      registrationPageInstance.getCloseWelcomeBanner().click();
   
-      cy.get('#comment').type('new_comment');
+      newCaptchaInstance.getAddComment().type('new_comment');
   
-      cy.get('#rating').click();
+      newCaptchaInstance.getSelectRating().click();
   
-      cy.get('[style="margin-bottom: 10px; margin-top: 10px;"]').as('captchaContainer');
+      newCaptchaInstance.getSelectCaptchaConteiner().as('captchaContainer');
   
-      cy.get('#captcha').invoke('text').then((captchaText) => {
+      newCaptchaInstance.getCaptchaText().invoke('text').then((captchaText) => {
         console.log('captchaText:', captchaText);
         const [num1, operator1, num2, operator2, num3] = captchaText
           .match(/(\d+|[+\-*\/])/g)
@@ -20,10 +25,10 @@ describe('test6', () => {
         const result =
           eval(`${parseInt(num1)} ${operator1} ${parseInt(num2)} ${operator2} ${parseInt(num3)}`);
 
-        cy.get('#captchaControl').type(result);
+          newCaptchaInstance.getCaptchaResult().type(result);
 
-        cy.get('#submitButton').click({force:true}); 
-        cy.get('.mat-simple-snack-bar-content').contains('Thank you for your feedback.'); 
+          newCaptchaInstance.getSubmitButton().click({force:true}); 
+          newCaptchaInstance.getFeedbackResult().should('contain', newCaptchaInstance.elements.feedbackResultText);
       });
     });
   });

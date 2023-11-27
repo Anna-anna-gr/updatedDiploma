@@ -9,7 +9,7 @@ describe('test3', () => {
     it('successfully registration', () => {
       cy.log('successfully login');
       cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/register')
-      cy.get('[aria-label="Close Welcome Banner"]').click();
+      registrationPageInstance.getCloseWelcomeBanner().click();
   
       user = {
         email : `testuser${Math.floor(Math.random() * 100000)}@example.com`,
@@ -20,19 +20,17 @@ describe('test3', () => {
        registrationPageInstance.fillRegistrationFileds(user)
   
       const randomSecurityQuestionIndex = Math.floor(Math.random() * 3); 
-      cy.get('#mat-select-0').click();
-      cy.get('.mat-option').eq(randomSecurityQuestionIndex).click();
+      registrationPageInstance.getSecurityQuestion().click();
+      registrationPageInstance.getSelectSecurityQuestion().eq(randomSecurityQuestionIndex).click();
   
-      cy.get('#securityAnswerControl').type(user.securityAnswer);
+      registrationPageInstance.getSecurityAnswer().type(user.securityAnswer);
   
-      
-      cy.get('#registerButton').click();
+      registrationPageInstance.getRegisterButton().click();
   
       
       cy.url().should('include', '/login'); 
-      cy.get('.ng-tns-c70-15 .mat-simple-snack-bar-content ').should('be.visible').should('have.text', 'Registration completed successfully. You can now log in.'); // Replace with the actual success message or element
-  
-  
+      
+
       Cypress.env('email', user.email);
       Cypress.env('password', user.password);
       
@@ -40,7 +38,7 @@ describe('test3', () => {
   
     it('successfull login', () => {
       cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/login');
-      cy.get('[aria-label="Close Welcome Banner"]').click();
+      registrationPageInstance.getCloseWelcomeBanner().click();
   
      
       const email = Cypress.env('email'); 
@@ -49,14 +47,14 @@ describe('test3', () => {
       loginPageInstance.getEmailField().type(email);
       loginPageInstance.getPasswordField().type(password);
   
-      cy.get('#loginButton').click();
+      loginPageInstance.getLoginButton().click();
   
       cy.url().should('include', '/search');
   
-      cy.get('.heading.mat-elevation-z6 ').should('be.visible').should('have.text','All Products');
+      loginPageInstance.getMainPage().should('be.visible').should('have.text','All Products');
   
-      cy.get('#navbarAccount').click();
-      cy.get('#navbarLogoutButton').click();
+      loginPageInstance.getHeaderAccountButtone().click();
+      loginPageInstance.getHeaderAccountLogoutButtone().click();
     });
   });
   

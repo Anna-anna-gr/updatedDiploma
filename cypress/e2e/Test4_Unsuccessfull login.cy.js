@@ -1,22 +1,24 @@
 import loginPage from '../support/pages/loginPage'
+import registrationPage from '../support/pages/registrationPage'
 
 describe('test4', () => {
     const loginPageInstance = new loginPage();
+    const registrationPageInstance = new registrationPage();
   
     it('Unsuccessfull login', () => {
       cy.log('Unsuccessfully login');
      
       cy.visit('https://juice-shop-sanitarskyi.herokuapp.com/#/login');
-      cy.get('[aria-label="Close Welcome Banner"]').click();
+      registrationPageInstance.getCloseWelcomeBanner().click();
   
       loginPageInstance.getEmailField().type('example');
       loginPageInstance.getPasswordField().type('123');
   
-      cy.get('#loginButton').click();
+      loginPageInstance.getLoginButton().click();
   
-      cy.get('.error.ng-star-inserted').contains('Invalid email or password.');
+      loginPageInstance.getValidationError().should('contain', loginPageInstance.elements.validationErrorText);
   
-      cy.get('#loginButton').should('not.be.disabled');
+      loginPageInstance.getLoginButton().should('not.be.disabled');
       
     });
   });
